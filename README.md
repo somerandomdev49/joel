@@ -5,5 +5,6 @@
 ## Testing
 
 ```bash
-python3 -m http.server <port>
+$ npm i
+$ python3 -m http.server <port>
 ```
