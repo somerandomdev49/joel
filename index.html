@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+	<title>joel</title>
+</head>
+<body>
+	<main class="split">
+		<div class="split-pane" id="sp-pn-0">
+			<div id="sp-pn-0-ed"></div>
+			<pre id="errs-0"></pre>
+		</div>
+		<div class="split-pane" id="sp-pn-1">
+			<div id="sp-pn-1-ed"></div>
+			<pre id="errs-1"></pre>
+		</div>
+	</main>
+
+	<script type="text/javascript" src="https://unpkg.com/monaco-themes/dist/monaco-themes.js"></script>
+	<script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+	<script>
+		Split(["#sp-pn-0", "#sp-pn-1"]);
+
+		require.config({ paths: { vs: 'node_modules/monaco-editor/min/vs' } });
+		require(['vs/editor/editor.main'], async () => {
+			const Q = q => document.querySelector(q);
+			const fetchJson = async url => (await (await fetch(url)).json());
+			const fetchText = async url => (await (await fetch(url)).text());
+
+			const tmThemeString = await fetchText("themes/rose-pine.tmTheme");
+			const themeData = MonacoThemes.parseTmTheme(tmThemeString);
+			monaco.editor.defineTheme('rose-pine', themeData);
+			monaco.editor.setTheme('rose-pine');
+
+			document.body.style.backgroundColor = themeData.colors["editor.background"];
+
+
+			function createPanel(
+				elem,
+				value,
+				language
+			) {
+				return monaco.editor.create(elem, {
+					value,
+					language,
+					automaticLayout: true,
+					smoothScrolling: true,
+					cursorSmoothCaretAnimation: true
+				});
+			}
+
+			const defExample =
+`// hello :>
+return {
+	tokenizer: {
+		root: []
+	}
+}`.trim();
+
+			const langName = "default";
+			const defInitialValue = window.localStorage.getItem(`joel-lang-${langName}`) || defExample;
+			const valInitialValue = window.localStorage.getItem(`joel-lang-${langName}-val`) || "";
+
+			monaco.languages.register({ id: 'custom-lang' });
+			const editorDef = createPanel(Q("#sp-pn-0-ed"), defInitialValue, "javascript");
+			const editorVal = createPanel(Q("#sp-pn-1-ed"), valInitialValue, "custom-lang");
+			const elemErrs = Q("#errs-0");
+
+			const defHandler = _e => {
+				window.localStorage.setItem(`joel-lang-${langName}`, editorDef.getValue());
+				try {
+					const v = new Function(editorDef.getValue())()
+					monaco.languages.setMonarchTokensProvider('custom-lang', v || {});
+					elemErrs.innerText = "";
+				} catch(e) {
+					elemErrs.innerText = e;
+				}
+			};
+			
+			const valHandler = _e => {
+				window.localStorage.setItem(`joel-lang-${langName}-val`, editorVal.getValue());
+			};
+			
+			editorDef.getModel().onDidChangeContent(defHandler);
+			editorVal.getModel().onDidChangeContent(valHandler);
+			defHandler();
+			valHandler();
+
+		});
+	</script>
+</body>
+</html>
