@@ -3,6 +3,7 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 }
 
 main {
@@ -14,9 +15,63 @@ main {
 
 .split-pane {
 	height: 100%;
+	min-height: 100%;
 	float: left;
 	display: grid;
 	grid-template-rows: 5fr 1fr;
 	margin: 0;
 	padding: 0;
+}
+
+pre[id^=errs-] {
+	border-top: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.menu {
+	width: 100%;
+	padding: 0.5rem;
+	display: flex;
+	justify-content: flex-start;
+	margin: 0;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+button, input {
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-radius: 2px;
+	background-color: #1F1D2E;
+	padding: 0.25rem;
+	color: whitesmoke;
+	margin-left: 1rem;
+	transition: all 0.1s ease-in-out;
+}
+
+button:active, input:focus {
+	outline: none;
+}
+
+button:active, input:hover {
+	background-color: hsl(247, 23%, 25%);
+}
+
+button:active, input:active {
+	background-color: hsl(247, 23%, 20%);
+}
+
+.gutter {
+	background-color: hsl(247, 23%, 20%);
+}
+
+.gutter {
+	float: left;
+	margin: 0;
+    background-color: hsl(250, 26%, 9%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+	height: 100%;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+    cursor: col-resize;
 }

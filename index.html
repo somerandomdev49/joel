@@ -10,6 +10,12 @@
 	<title>joel</title>
 </head>
 <body>
+	<header class="menu">
+		<span class="menu-el"><input type="text" id="inp-lang-name" value="default" placeholder="name..."></span>
+		<span class="menu-el"><button id="btn-new-lang">New</button></span>
+		<span class="menu-el"><button id="btn-load-lang">Load</button></span>
+		<span class="menu-el"><button id="btn-rename-lang">Rename</button></span>
+	</header>
 	<main class="split">
 		<div class="split-pane" id="sp-pn-0">
 			<div id="sp-pn-0-ed"></div>
@@ -24,7 +30,12 @@
 	<script type="text/javascript" src="https://unpkg.com/monaco-themes/dist/monaco-themes.js"></script>
 	<script src="node_modules/monaco-editor/min/vs/loader.js"></script>
 	<script>
-		Split(["#sp-pn-0", "#sp-pn-1"]);
+		let onDrag = () => {};
+
+		Split(["#sp-pn-0", "#sp-pn-1"], {
+			minSize: 50,
+			onDrag: () => onDrag(),
+		});
 
 		require.config({ paths: { vs: 'node_modules/monaco-editor/min/vs' } });
 		require(['vs/editor/editor.main'], async () => {
@@ -50,7 +61,17 @@
 					language,
 					automaticLayout: true,
 					smoothScrolling: true,
-					cursorSmoothCaretAnimation: true
+					cursorSmoothCaretAnimation: true,
+					cursorBlinking: "smooth",
+					unicodeHighlight: false,
+					rulers: [],
+					minimap: {
+						enabled: false
+					},
+					scrollbar: {
+						horizontal: "hidden",
+						vertical: "hidden",
+					}
 				});
 			}
 
@@ -91,6 +112,10 @@ return {
 			defHandler();
 			valHandler();
 
+			onDrag = () => {
+				editorDef.layout({});
+				editorVal.layout({});
+			};
 		});
 	</script>
 </body>
